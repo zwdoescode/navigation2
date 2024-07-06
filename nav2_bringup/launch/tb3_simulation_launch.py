@@ -160,7 +160,7 @@ def generate_launch_description():
 
     declare_robot_sdf_cmd = DeclareLaunchArgument(
         'robot_sdf',
-        default_value=os.path.join(sim_dir, 'urdf', 'gz_waffle.sdf'),
+        default_value=os.path.join(sim_dir, 'urdf', 'gz_waffle.sdf.xacro'),
         description='Full path to robot sdf file to spawn the robot in gazebo',
     )
 
@@ -214,12 +214,11 @@ def generate_launch_description():
     world_sdf = tempfile.mktemp(prefix='nav2_', suffix='.sdf')
     world_sdf_xacro = ExecuteProcess(
         cmd=['xacro', '-o', world_sdf, ['headless:=', headless], world])
-    gazebo_server = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory('ros_gz_sim'), 'launch',
-                         'gz_sim.launch.py')),
-        launch_arguments={'gz_args': ['-r -s ', world_sdf]}.items(),
-        condition=IfCondition(use_simulator))
+    gazebo_server = ExecuteProcess(
+        cmd=['gz', 'sim', '-r', '-s', world_sdf],
+        output='screen',
+        condition=IfCondition(use_simulator)
+    )
 
     remove_temp_sdf_file = RegisterEventHandler(event_handler=OnShutdown(
         on_shutdown=[
@@ -241,7 +240,6 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(sim_dir, 'launch', 'spawn_tb3.launch.py')),
         launch_arguments={'namespace': namespace,
-                          'use_simulator': use_simulator,
                           'use_sim_time': use_sim_time,
                           'robot_name': robot_name,
                           'robot_sdf': robot_sdf,

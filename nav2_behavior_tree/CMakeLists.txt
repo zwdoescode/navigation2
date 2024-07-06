@@ -20,8 +20,6 @@ find_package(nav2_util REQUIRED)
 
 nav2_package()
 
-add_compile_options(-Wno-shadow) # Delete after https://github.com/BehaviorTree/BehaviorTree.CPP/issues/811 is released
-
 include_directories(
   include
 )
@@ -184,6 +182,9 @@ list(APPEND plugin_libs nav2_navigate_through_poses_action_bt_node)
 
 add_library(nav2_remove_passed_goals_action_bt_node SHARED plugins/action/remove_passed_goals_action.cpp)
 list(APPEND plugin_libs nav2_remove_passed_goals_action_bt_node)
+
+add_library(nav2_get_pose_from_path_action_bt_node SHARED plugins/action/get_pose_from_path_action.cpp)
+list(APPEND plugin_libs nav2_get_pose_from_path_action_bt_node)
 
 add_library(nav2_pipeline_sequence_bt_node SHARED plugins/control/pipeline_sequence.cpp)
 list(APPEND plugin_libs nav2_pipeline_sequence_bt_node)
