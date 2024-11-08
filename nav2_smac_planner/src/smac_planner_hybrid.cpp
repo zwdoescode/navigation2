@@ -322,7 +322,7 @@ nav_msgs::msg::Path SmacPlannerHybrid::createPlan(
 
   // Setup message
   nav_msgs::msg::Path plan;
-  plan.header.stamp = _clock->now();
+  plan.header.stamp = start.header.stamp;
   plan.header.frame_id = _global_frame;
   geometry_msgs::msg::PoseStamped pose;
   pose.header = plan.header;
